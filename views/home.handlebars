@@ -1,0 +1,32 @@
+<form class="d-flex flex-column justify-content-center align-items-center" style="height: 50vh;" action="/" method="POST">
+  {{> messages}}
+  <input
+    class="form-control form-control mb-3" style="width: 50%"
+    type="text"
+    name="link"
+    placeholder="Enter URL link that you want to shorten"
+    value="{{ link }}">
+  <button type="submit" class="btn btn-primary btn-lg">Shorten</button>
+</form>
+
+<table class="table table-bordered table-hover col-6 mx-auto">
+  <thead>
+    <tr>
+      <th scope="col">Original Link</th>
+      <th scope="col">Shortened</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each links}}
+      <tr>
+        <th scope="row">{{this.link}}</td>
+        <td>
+          <a href="http://localhost:3000/{{this.shortened}}">
+          http://localhost:3000/{{this.shortened}}
+          </a>
+        </td>
+
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
