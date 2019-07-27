@@ -27,7 +27,7 @@ app.use((req,res, next) => {
   next()
 })
 
-mongoose.connect('mongodb://localhost/url-shortener', { useNewUrlParser: true, useCreateIndex: true })
+mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/url-shortener', { useNewUrlParser: true, useCreateIndex: true })
 const db = mongoose.connection
 db.on('error', () => {
   console.log('db error')
@@ -89,6 +89,6 @@ app.get('/:shortenedUrl', (req, res) => {
   })
 })
 
-app.listen(3000, () => {
+app.listen( process.env.PORT || 3000, () => {
   console.log(`app running`)
 })
