@@ -58,7 +58,6 @@ app.post('/', (req, res) => {
 
   if (errors.length > 0) {
     URL.find().exec((err, links) => {
-      console.log(links)
       res.render('home', {links, link, errors, host})
     })
   } else {
@@ -87,7 +86,12 @@ app.get('/:shortenedUrl', (req, res) => {
   const { shortenedUrl } = req.params
 
   URL.findOne({ shortened: shortenedUrl}, (err, url) => {
-    res.redirect(url.link)
+    if (url) {
+      res.redirect(url.link)
+    } else {
+      req.flash('error_msg', '該網址尚未被縮短過')
+      res.redirect('/')
+    }
   })
 })
 
