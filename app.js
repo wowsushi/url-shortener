@@ -8,6 +8,8 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const { genHash } = require('./genHash.js')
 
+const host = (process.env.MONGODB_URI) ? 'https://aqueous-plateau-67569.herokuapp.com/' : 'http://localhost:3000/'
+
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))
 app.set('view engine', 'handlebars')
 app.use(express.static('public'))
@@ -41,7 +43,7 @@ const URL = require('./model/url.js')
 
 app.get('/', (req, res) => {
   URL.find().exec((err, links) => {
-    res.render('home', {links})
+    res.render('home', {links, host})
   })
 
 })
@@ -57,7 +59,7 @@ app.post('/', (req, res) => {
   if (errors.length > 0) {
     URL.find().exec((err, links) => {
       console.log(links)
-      res.render('home', {links, link, errors})
+      res.render('home', {links, link, errors, host})
     })
   } else {
     URL.findOne({ link: req.body.link }, (err, url) => {
@@ -70,7 +72,7 @@ app.post('/', (req, res) => {
         })
         newURL.save( err => {
           if (err) console.log(err)
-          req.flash('success_msg', `縮短後網址為 http://localhost:3000/${newURL.shortened}`)
+          req.flash('success_msg', `縮短後網址為 ${host}${newURL.shortened}`)
           res.redirect('/')
         })
       } else {
