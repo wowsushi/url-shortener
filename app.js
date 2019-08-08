@@ -61,24 +61,36 @@ app.post('/', (req, res) => {
       res.render('home', {links, link, errors, host})
     })
   } else {
-    URL.findOne({ link: req.body.link }, (err, url) => {
-      if (err) return err
+    let shortenedUrl = 'IM5Os'
 
-      if (!url) {
-        const newURL = new URL({
-          link: req.body.link,
-          shortened: genHash(5)
-        })
-        newURL.save( err => {
-          if (err) console.log(err)
-          req.flash('success_msg', `縮短後網址為 ${host}${newURL.shortened}`)
-          res.redirect('/')
-        })
-      } else {
-        req.flash('error_msg', '該網址已經縮短過了，請重新輸入')
-        res.redirect('/')
-      }
-    })
+    uniqueCheck()
+
+    function uniqueCheck() {
+      URL.findOne({ shortened: shortenedUrl }, (err, url) => {
+        if (url) {
+          shortenedUrl = genHash(5)
+          uniqueCheck()
+        } else {
+          URL.findOne({ link: req.body.link }, (err, url) => {
+            if (err) return err
+
+            if (!url) {
+              const newURL = new URL({
+                link: req.body.link,
+                shortened: shortenedUrl
+              })
+              newURL.save( err => {
+                if (err) console.log(err)
+                req.flash('success_msg', `縮短後網址為 ${host}${newURL.shortened}`)
+                res.redirect('/')
+              })
+            } else {
+              req.flash('error_msg', '該網址已經縮短過了，請重新輸入')
+              res.redirect('/')
+            }
+          })
+        }
+    })}
   }
 })
 
